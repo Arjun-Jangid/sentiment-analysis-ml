@@ -3,15 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import router
 from database.connection import engine
 from database.models import Base
-import nltk
-import os
-
-nltk_data_path = os.path.join(os.getcwd(), "nltk_data")
-os.makedirs(nltk_data_path, exist_ok=True)
-nltk.data.path = [nltk_data_path]
-
-nltk.download('stopwords', download_dir=nltk_data_path)
-nltk.download('punkt', download_dir=nltk_data_path)
 
 
 app = FastAPI(

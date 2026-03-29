@@ -3,6 +3,23 @@ import contractions
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import nltk
+import os
+
+nltk_data_path = os.path.join(os.getcwd(), "nltk_data")
+os.makedirs(nltk_data_path, exist_ok=True)
+
+nltk.data.path = [nltk_data_path]
+
+try:
+    nltk.data.find('corpora/stopwords')
+except:
+    nltk.download('stopwords', download_dir=nltk_data_path)
+
+try:
+    nltk.data.find('corpora/wordnet')
+except:
+    nltk.download('wordnet', download_dir=nltk_data_path)
 
 stop_words = set(stopwords.words('english'))
 negation_words = {"no", "nor", "not", "never", "none", "nobody", "nothing", "neither", "nowhere", "hardly", "barely", "scarcely", "cannot", "can't", "won't", "isn't", "aren't", "wasn't", "weren't", "don't", "doesn't", "didn't", "haven't", "hasn't", "hadn't", "shouldn't", "wouldn't", "couldn't", "mustn't", "mightn't", "shan't"}
