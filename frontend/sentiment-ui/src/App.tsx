@@ -28,9 +28,11 @@ function App() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [limit, setLimit] = useState(10);
   const [showMenu, setShowMenu] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchHistory = async () => {
     try {
+      setError(null);
       setHistoryLoading(true);
       const response = await fetch(`${API_URL}/history?limit=${limit}`);
 
@@ -42,6 +44,7 @@ function App() {
       setHasMore(data.has_more);
     } catch (error) {
       console.error("Error fetching history:", error);
+      setError("Failed to load history.");
     } finally {
       setHistoryLoading(false);
     }
@@ -59,6 +62,7 @@ function App() {
     }
 
     try {
+      setError(null);
       setPredictLoading(true);
       const response = await fetch(`${API_URL}/predict`, {
         method: "POST",
@@ -69,7 +73,7 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error(`Request failed: ${response.status}`);
+        throw new Error("Failed to predict sentiment. Please try again.");
       }
 
       const data = await response.json();
@@ -77,6 +81,7 @@ function App() {
       setReview("");
       fetchHistory();
     } catch (error) {
+      setError(error instanceof Error ? error.message : "Something went wrong");
       console.error("Error:", error);
     } finally {
       setPredictLoading(false);
@@ -98,8 +103,17 @@ function App() {
     fetchHistory();
   }, [limit]);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   return (
     <>
+      {error && <div className="error_box">{error}</div>}
+
       <div className="main_section">
         <img className="menu" src="/menu.png" onClick={toggleHandler} />
         <aside
@@ -113,6 +127,12 @@ function App() {
                 <div className="history_loader_wrap">
                   <span className="loader large" aria-label="Loading" />
                 </div>
+              ) : error ? (
+                <p className="history_empty">
+                  Unable to load history. Please try again.
+                </p>
+              ) : history.length === 0 ? (
+                <p className="history_empty">No history yet.</p>
               ) : (
                 <>
                   {history.map((item) => (
@@ -135,6 +155,7 @@ function App() {
                       <span className="loader small" />
                     </div>
                   )}
+
                   {hasMore && !historyLoading && (
                     <button
                       className="show_more_btn"
