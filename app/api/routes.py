@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from app.schemas.schemas import ReviewRequest, PredictionResponse, HistoryResponse
 from app.services.predict_service import get_prediction, get_prediction_history
 from database.connection import get_db
-from database.models import Prediction
 
 router = APIRouter()
 

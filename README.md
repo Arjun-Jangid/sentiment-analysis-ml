@@ -5,15 +5,15 @@ An end-to-end sentiment analysis system built with:
 - Machine Learning (Scikit-learn)
 - FastAPI
 - React
-- Docker
 
 ## Features
 
 - Sentiment prediction using TF-IDF + Logistic Regression
 - REST API built with FastAPI
 - React frontend for user interaction
-- Batch prediction support
-- Dockerized deployment
+- Prediction history stored in database
+- Pagination support (Show More functionality)
+- Real-time prediction with probability scores
 
 ## Tech Stack
 
@@ -21,7 +21,8 @@ An end-to-end sentiment analysis system built with:
 - Scikit-learn
 - FastAPI
 - React
-- Docker
+- SQLAlchemy
+- SQLite / PostgreSQL
 
 ## Project Structure
 
@@ -29,8 +30,18 @@ sentiment-analysis-ml/
 ├── app/ # FastAPI API
 ├── src/ # ML training & preprocessing
 ├── models/ # Trained model
-├── data/ # Dataset
+
 ├── frontend/ # React UI
+
+## Project Structure
+
+sentiment-analysis-ml/
+├── app/ # FastAPI backend
+├── data/ # Dataset
+├── database/ # DB models & CRUD
+├── frontend/ # React UI
+├── models/ # Trained model (.pkl)
+├── src/ # ML pipeline (training, preprocessing)
 
 ## Model
 
@@ -47,23 +58,30 @@ uvicorn app.main:app --reload
 
 cd frontend
 npm install
-npm start
+npm run dev
 
-## API Endpoint
+## API Endpoints
 
-POST /predict
+### POST /predict
+
+Predict sentiment of a review
 
 Request:
-
 {
 "review": "This movie was amazing"
 }
 
 Response:
-
 {
-"sentiment": "positive"
+"sentiment": "positive",
+"positive_probability": 0.98,
+"negative_probability": 0.02
 }
+
+### GET /history
+
+Fetch prediction history with limit
+Example: /history?limit=10
 
 ## Demo
 
