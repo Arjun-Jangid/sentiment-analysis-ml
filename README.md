@@ -13,7 +13,7 @@ An end-to-end sentiment analysis system built with:
 
 
 ## 🚀 Live Demo
-https://sentiment-analysis-jzqlndwzt-arjunmhr2019-4887s-projects.vercel.app/
+https://sentiment-analysis-ml-peach.vercel.app/
 
 
 
