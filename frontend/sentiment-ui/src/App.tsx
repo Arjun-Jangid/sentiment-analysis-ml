@@ -18,6 +18,10 @@ interface HistoryItem {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+if (!API_URL) {
+  throw new Error("VITE_API_URL is not defined");
+}
+
 function App() {
   const [review, setReview] = useState("");
   const [result, setResult] = useState<SentimentResult | null>(null);
@@ -29,10 +33,11 @@ function App() {
   const [limit, setLimit] = useState(10);
   const [showMenu, setShowMenu] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
 
   const fetchHistory = async () => {
     try {
-      setError(null);
+      setHistoryError(null);
       setHistoryLoading(true);
       const response = await fetch(`${API_URL}/history?limit=${limit}`);
 
@@ -44,7 +49,7 @@ function App() {
       setHasMore(data.has_more);
     } catch (error) {
       console.error("Error fetching history:", error);
-      setError("Failed to load history.");
+      setHistoryError("Failed to load history.");
     } finally {
       setHistoryLoading(false);
     }
@@ -78,8 +83,9 @@ function App() {
 
       const data = await response.json();
       setResult(data);
-      setReview("");
       fetchHistory();
+      setReview("");
+      // setLimit(10);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Something went wrong");
       console.error("Error:", error);
@@ -89,7 +95,13 @@ function App() {
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      !e.ctrlKey &&
+      !e.metaKey &&
+      !e.altKey
+    ) {
       e.preventDefault();
       predictSentiment();
     }
@@ -115,7 +127,21 @@ function App() {
       {error && <div className="error_box">{error}</div>}
 
       <div className="main_section">
-        <img className="menu" src="/menu.png" onClick={toggleHandler} />
+        <img
+          className="menu"
+          src="/menu.png"
+          alt=""
+          role="button"
+          tabIndex={0}
+          aria-label="Toggle history menu"
+          onClick={toggleHandler}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleHandler();
+            }
+          }}
+        />
         <aside
           id="menu_div"
           className={`history_section ${showMenu ? "open" : "close"}`}
@@ -127,7 +153,7 @@ function App() {
                 <div className="history_loader_wrap">
                   <span className="loader large" aria-label="Loading" />
                 </div>
-              ) : error ? (
+              ) : historyError ? (
                 <p className="history_empty">
                   Unable to load history. Please try again.
                 </p>
@@ -136,7 +162,11 @@ function App() {
               ) : (
                 <>
                   {history.map((item) => (
-                    <div key={item.id} className="history_item">
+                    <div
+                      key={item.id}
+                      className="history_item"
+                      onClick={() => setReview(item.review)}
+                    >
                       <p className="text">
                         <strong>Review:</strong> {item.review}
                       </p>
@@ -158,6 +188,7 @@ function App() {
 
                   {hasMore && !historyLoading && (
                     <button
+                      type="button"
                       className="show_more_btn"
                       disabled={historyLoading}
                       onClick={() => setLimit((prev) => prev + 10)}
@@ -173,27 +204,35 @@ function App() {
 
         <div className="model_section">
           <h1 className="heading">Text Sentiment Classifier</h1>
-          <div className={`input_container ${shake ? "shake" : ""}`}>
-            <textarea
-              className="sentiment_input"
-              placeholder="Enter your review here…"
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-              onKeyDown={handleKeyDown}
-              rows={5}
-              spellCheck
-            />
-            <button
-              className="btn"
-              onClick={predictSentiment}
-              disabled={predictLoading}
-            >
-              {predictLoading ? (
-                <span className="loader small"></span>
-              ) : (
-                "Predict"
-              )}
-            </button>
+          <div className="chat_input_wrapper">
+            <div className={`input_container ${shake ? "shake" : ""}`}>
+              <textarea
+                className="sentiment_input"
+                placeholder="Enter your review here…"
+                disabled={predictLoading}
+                value={review}
+                onChange={(e) => setReview(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={5}
+                spellCheck
+              />
+              <button
+                className={`send_btn ${predictLoading && "new_class"}`}
+                onClick={predictSentiment}
+                disabled={!review.trim() || predictLoading}
+              >
+                {predictLoading ? (
+                  <span className="loader small"></span>
+                ) : (
+                  <img
+                    className="send_icon"
+                    src="/send.png"
+                    alt="Send"
+                    aria-label="Predict sentiment"
+                  />
+                )}
+              </button>
+            </div>
           </div>
           <div className="sentiment_details_container">
             <p className="sentiment_text">{result?.sentiment || "Sentiment"}</p>

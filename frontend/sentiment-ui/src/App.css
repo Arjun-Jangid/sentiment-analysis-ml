@@ -9,6 +9,79 @@
   height: 100vh;
 }
 
+.chat_input_wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.send_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  background: whitesmoke;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.send_icon {
+  height: 18px;
+  width: 18px;
+}
+
+.send_btn:active {
+  border: none;
+  outline: none;
+}
+
+.send_btn:disabled {
+  opacity: 0.6;
+}
+
+.new_class {
+  background-color: white;
+  opacity: 1 !important;
+}
+
+.shake {
+  animation: shakeAnimation 0.4s;
+  border: 1px solid #370617 !important;
+  background-color: #2d15172d !important;
+}
+
+@keyframes shakeAnimation {
+  0% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(-6px);
+  }
+  30% {
+    transform: translateX(6px);
+  }
+  45% {
+    transform: translateX(-6px);
+  }
+  60% {
+    transform: translateX(6px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+  90% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .error_box {
   position: absolute;
   top: 10px;
@@ -76,7 +149,7 @@
   border: 1px solid #c7adad44;
   border-radius: 30px;
   background-color: rgba(31, 31, 31, 0.45);
-  padding: 6px 6px 6px 3px;
+  padding: 10px 10px 10px 6px;
   width: 75%;
 }
 
@@ -99,12 +172,6 @@
 
 .sentiment_input::placeholder {
   color: rgba(255, 255, 255, 0.45);
-}
-
-.shake {
-  animation: shake 0.4s;
-  border: 1px solid #370617;
-  background-color: #1f0c0e91;
 }
 
 .btn,
@@ -152,7 +219,7 @@
 }
 
 .loader {
-  border: 2px solid #fff;
+  border: 2px solid black;
   border-top: 2px solid transparent;
   border-radius: 50%;
   display: inline-block;
@@ -177,7 +244,11 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-align: center;
-  background-color: linear-gradient(135deg, #0b0f14, #111827);
+  background: linear-gradient(
+    135deg,
+    rgba(17, 24, 39, 0.45),
+    rgba(11, 15, 20, 0.25)
+  );
   backdrop-filter: blur(10px);
   border-radius: 20px 20px 0 0;
 }
@@ -189,12 +260,18 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  background-color: linear-gradient(135deg, #0b0f14, #111827);
+  background: linear-gradient(
+    135deg,
+    rgba(17, 24, 39, 0.45),
+    rgba(11, 15, 20, 0.25)
+  );
   backdrop-filter: blur(20px);
   border: 1px solid rgba(47, 47, 47, 0.85);
   border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.25),
+    0 20px 10px rgba(0, 0, 0, 0.15);
 }
 
 .history_list {
@@ -283,33 +360,6 @@
   }
 }
 
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-  15% {
-    transform: translateX(-6px);
-  }
-  30% {
-    transform: translateX(6px);
-  }
-  45% {
-    transform: translateX(-6px);
-  }
-  60% {
-    transform: translateX(6px);
-  }
-  75% {
-    transform: translateX(-4px);
-  }
-  90% {
-    transform: translateX(4px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -339,7 +389,6 @@
     max-width: 100%;
     z-index: 100;
     transition: transform 0.3s ease;
-    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.45);
   }
 
   .history_section.close {
@@ -367,8 +416,8 @@
   .heading {
     font-size: 36px;
   }
-
-  .input_container {
-    padding: 0 2px;
+  .send_btn {
+    width: 30px;
+    height: 30px;
   }
 }
